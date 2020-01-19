@@ -1,0 +1,37 @@
+apply plugin: "java"
+
+version '1.0'
+
+sourceCompatibility = 1.8
+
+repositories{
+    mavenCentral()
+    maven{ url 'https://www.jitpack.io' }
+}
+
+dependencies{
+    compileOnly "com.github.Anuken.Arc:arc-core:ff62d39e0fa294117a885010b05b2b29412b4024"
+    compileOnly "com.github.Anuken.Mindustry:core:6e6f8f3cdbf3c896335af11a631a31e3c5692262"
+}
+
+jar{
+    version = null
+    from{
+        configurations.runtimeClasspath.collect{it.isDirectory() ? it : zipTree(it)}
+    }
+}
+
+// gradle server && java -jar ./be/Mindustry-BE-Server-6814.jar
+// java -XstartOnFirstThread -jar ./be/Mindustry-BE-Desktop-6814.jar
+task server(){
+    dependsOn "jar"
+
+    doLast{
+        copy{
+            from "./build/libs/mindustry__plugin--flatearth.jar"
+            into "./config/mods"
+        }
+
+        delete "./build/libs/mindustry__plugin--flatearth.jar"
+    }
+}
